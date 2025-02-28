@@ -1,5 +1,6 @@
 
-theme: minima
+title: drunkcat's blog
+
 remote_theme: jekyll/minima
 
 plugins:
