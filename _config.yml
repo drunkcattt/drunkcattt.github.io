@@ -7,7 +7,8 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-show_excerpts: true
+
 
 minima:
   skin: dark
+  show_excerpts: true
