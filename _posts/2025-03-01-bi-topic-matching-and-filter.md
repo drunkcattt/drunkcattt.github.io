@@ -1,3 +1,7 @@
+---
+layout: post
+---
+
 # BifroMQ主题匹配与过滤机制详解
 
 ## MQTT 主题路由的挑战
@@ -49,7 +53,7 @@ private void addChild(TopicTrieNode<V> node, int level, List<String> topicLevels
     boolean wildcardMatchable = isGlobal
         ? level > 1 || level == 1 && !levelName.startsWith(SYS_PREFIX)
         : level > 0 || !levelName.startsWith(SYS_PREFIX);
-    TopicTrieNode<V> child = 
+    TopicTrieNode<V> child =
         node.children.computeIfAbsent(levelName, k -> new TopicTrieNode<>(levelName, wildcardMatchable));
     if (level == topicLevels.size() - 1) {
         child.topic = topicLevels;
@@ -69,9 +73,11 @@ private void addChild(TopicTrieNode<V> node, int level, List<String> topicLevels
 ```java
 abstract class TopicFilterTrieNode<V> {
     protected final TopicFilterTrieNode<V> parent;
-    
+
     abstract String levelName();
+
     abstract Set<TopicTrieNode<V>> backingTopics();
+
     abstract void seekChild(String childLevelName);
     // ...其他抽象方法
 }
@@ -108,7 +114,7 @@ final class STopicFilterTrieNode<V> extends TopicFilterTrieNode<V> {
     String levelName() {
         return SINGLE_WILDCARD; // "+"
     }
-    
+
     @Override
     Set<TopicTrieNode<V>> backingTopics() {
         Set<TopicTrieNode<V>> topics = Sets.newHashSet();
@@ -133,7 +139,7 @@ final class MTopicFilterTrieNode<V> extends TopicFilterTrieNode<V> {
     String levelName() {
         return MULTI_WILDCARD; // "#"
     }
-    
+
     @Override
     Set<TopicTrieNode<V>> backingTopics() {
         Set<TopicTrieNode<V>> topics = Sets.newHashSet();
@@ -145,7 +151,7 @@ final class MTopicFilterTrieNode<V> extends TopicFilterTrieNode<V> {
         }
         return topics;
     }
-    
+
     private void collectTopics(TopicTrieNode<V> node, Set<TopicTrieNode<V>> topics) {
         if (node.isUserTopic()) {
             topics.add(node);
@@ -168,14 +174,14 @@ final class MTopicFilterTrieNode<V> extends TopicFilterTrieNode<V> {
 public class TopicFilterIterator<V> implements ITopicFilterIterator<V> {
     private final TopicTrieNode<V> topicTrieRoot;
     private final Stack<TopicFilterTrieNode<V>> traverseStack = new Stack<>();
-    
+
     @Override
     public void seek(List<String> filterLevels) {
         traverseStack.clear();
         traverseStack.add(TopicFilterTrieNode.from(topicTrieRoot));
         // ...查找逻辑
     }
-    
+
     @Override
     public Map<List<String>, Set<V>> value() {
         if (traverseStack.isEmpty()) {
@@ -225,7 +231,7 @@ public void seek(List<String> filterLevels) {
         TopicFilterTrieNode<V> node = traverseStack.peek();
         String levelName = node.levelName();
         int cmp = levelNameToSeek.compareTo(levelName);
-        
+
         if (cmp < 0) {
             // levelNameToSeek < levelName
             break;
@@ -282,19 +288,29 @@ public void seek(List<String> filterLevels) {
 ```java
 // 构建主题树示例
 TopicTrieNode.Builder<String> builder = TopicTrieNode.builder(false);
-builder.addTopic(List.of("sensors", "temperature", "room1"), "subscriber1");
-builder.addTopic(List.of("sensors", "humidity", "room1"), "subscriber2");
-builder.addTopic(List.of("sensors", "temperature", "room2"), "subscriber3");
+builder.
+
+addTopic(List.of("sensors", "temperature","room1"), "subscriber1");
+    builder.
+
+addTopic(List.of("sensors", "humidity","room1"), "subscriber2");
+    builder.
+
+addTopic(List.of("sensors", "temperature","room2"), "subscriber3");
 TopicTrieNode<String> root = builder.build();
 
 // 创建遍历器
 ITopicFilterIterator<String> iterator = new TopicFilterIterator<>(root);
 
 // 查找匹配"sensors/+/room1"的所有主题
-iterator.seek(List.of("sensors", "+", "room1"));
-if (iterator.isValid()) {
-    Map<List<String>, Set<String>> matches = iterator.value();
-    // 处理匹配结果...
+iterator.
+
+seek(List.of("sensors", "+","room1"));
+    if(iterator.
+
+isValid()){
+Map<List<String>, Set<String>> matches = iterator.value();
+// 处理匹配结果...
 }
 ```
 
