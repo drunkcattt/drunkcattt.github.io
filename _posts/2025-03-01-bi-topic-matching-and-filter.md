@@ -1,8 +1,8 @@
 ---
 layout: post
+title: "BifroMQ主题匹配与过滤机制详解"
+categories: mqtt
 ---
-
-# BifroMQ主题匹配与过滤机制详解
 
 ## MQTT 主题路由的挑战
 
