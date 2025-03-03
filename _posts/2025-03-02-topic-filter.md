@@ -1,4 +1,8 @@
-# Topic Filter (主题过滤器) 在 MQTT 主题匹配中的实现原理
+---
+layout: post
+title: "Topic Filter (主题过滤器) 在 MQTT 主题匹配中的实现原理"
+categories: mqtt
+---
 
 在上篇文章我们详细探讨了前缀树（Trie）在 MQTT 主题匹配中的基础应用。本文将进一步深入，介绍代码中实现的 Topic Filter（主题过滤器）机制，它是 MQTT 主题匹配的核心组件。
 
